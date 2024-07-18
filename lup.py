@@ -38,7 +38,7 @@ def lup(point_list, alpha=3e-4):
     
     for i in range(len(point_list)):
         point = point_list[i]
-        print("# STEP", i)
+        print("# NODE", i)
         if i == 0 or i == len(point_list)-1:
             grad = derivatives.grad(mb_pot.muller_brown_potential, point[0][0], point[1][0])
             

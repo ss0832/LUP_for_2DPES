@@ -10,9 +10,9 @@ print("Locally Updated Plain (LUP) method for Muller-Brown potential")
 init_point = np.array([[0.823499], [0.028038]]) #initial points
 end_point = np.array([[0.158233], [0.501716]])
 iteration = 40
-number_of_node = 14
+number_of_nodes = 14
 
-init_point_list = lup.lst(init_point, end_point, n_points=number_of_node)
+init_point_list = lup.lst(init_point, end_point, n_points=number_of_nodes)
 
 # save Init condition
 level = []
