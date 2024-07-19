@@ -1,6 +1,7 @@
 import numpy as np
 import mb_pot
 import derivatives
+import opt
 
 # ref.1: https://superadditive.com/notes/cecam-molecular-kinetics-2016/locally-updated-planes.html
 # ref.2: Ulitsky, A., & Elber, R. (1990). A new technique to calculate steepest descent paths in flexible polyatomic systems. The Journal of Chemical Physics, 92(2), 1510. doi:10.1063/1.458112
@@ -42,7 +43,7 @@ def lup(point_list, alpha=3e-4):
         if i == 0 or i == len(point_list)-1:
             grad = derivatives.grad(mb_pot.muller_brown_potential, point[0][0], point[1][0])
             
-            new_point = point - alpha * grad
+            new_point = point + opt.steepest_descent(grad, alpha)
            
             new_point_list.append(new_point)
             new_point_energy_list.append(mb_pot.muller_brown_potential(new_point[0][0], new_point[1][0]))
@@ -52,9 +53,11 @@ def lup(point_list, alpha=3e-4):
             tangent = calc_tangent_vec(point_list[i-1], point_list[i+1])
             proj_grad = project_tangent_vec_for_grad(grad, tangent)
             proj_hess = project_tangent_vec_for_hess(hess, tangent)
-            move_vec = -1 * np.dot(np.linalg.pinv(proj_hess), proj_grad)
+            
+            move_vec = opt.newton_raphson(proj_grad, proj_hess)
             
             trust_radius = min(np.linalg.norm(point - point_list[i-1]), np.linalg.norm(point_list[i+1] - point)) / 2
+            
             move_vec = move_vec * min(trust_radius, np.linalg.norm(move_vec)) / np.linalg.norm(move_vec)
             new_point = point + move_vec
            
